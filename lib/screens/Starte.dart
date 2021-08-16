@@ -12,7 +12,7 @@ class Start extends StatefulWidget {
 class _StartState extends State<Start> {
   @override
   void initState() {
-    Timer(Duration(seconds: 7), () {
+    Timer(Duration(hours: 7), () {
       Navigator.pop(context);
 
       Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -25,7 +25,7 @@ class _StartState extends State<Start> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFE4E4E4),
+        backgroundColor: Color(0xFFFFFFFF),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wamdha/config/dicl.dart';
+import 'package:wamdha/screens/profile.dart';
 
 class books extends StatelessWidget {
   final title, image;
@@ -17,7 +18,10 @@ class books extends StatelessWidget {
       child: Stack(
         children: [
           Card(
-            elevation: 20,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 10,
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -64,7 +68,9 @@ class books extends StatelessWidget {
 }
 
 Padding clubOfficials(
-    BuildContext context, AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
+  BuildContext context,
+  AsyncSnapshot<QuerySnapshot<Object?>> snapshot,
+) {
   return Padding(
     padding: const EdgeInsets.only(left: 10, right: 10),
     child: Container(
@@ -72,11 +78,51 @@ Padding clubOfficials(
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: snapshot.data!.docs.map((document) {
-          return CircleAvatar(
-            radius: 43,
-            foregroundImage: NetworkImage(
-              document['image'],
+          return InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Profile();
+              }));
+            },
+            child: CircleAvatar(
+              radius: 43,
+              backgroundColor: Colors.black26,
+              foregroundImage: NetworkImage(
+                document['image'],
+              ),
             ),
+          );
+        }).toList(),
+      ),
+    ),
+  );
+}
+
+Widget lastadded(
+    BuildContext context, AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+    child: Container(
+      height: height(context) * 0.3,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: snapshot.data!.docs.map((document) {
+          return Column(
+            children: [
+              Expanded(
+                child: books(
+                  image: document['image'],
+                  title: document['name'],
+                ),
+              ),
+              Text(
+                document['name'],
+                style: TextStyle(
+                    fontSize: 15,
+                    color: black.withOpacity(0.5),
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
           );
         }).toList(),
       ),

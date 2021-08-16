@@ -68,148 +68,58 @@ class NewWidget extends StatelessWidget {
                 height: 10,
                 // Searsh
               ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: InkWell(
-                  onTap: () {},
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  child: Container(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Icon(Icons.search),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          "Search",
-                          style: TextStyle(fontSize: 20),
-                        )
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFF3F3F3),
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
-                    width: widthf(context),
-                    height: 45,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 0, right: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      'Club Officials',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Spacer(),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text("See All"),
-                    ),
-                  ],
-                ),
-              ),
+              searsh(context),
+              charit1(
+                  title: 'Club Officials', seeALL: true, seeALLfunction: () {}),
               clubOfficials(context, snapshot),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      'Last Added',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Spacer(),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text("See All"),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: Container(
-                  height: height(context) * 0.3,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: snapshot.data!.docs.map((document) {
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: books(
-                              image: document['image'],
-                              title: document['name'],
-                            ),
-                          ),
-                          Text(
-                            document['name'],
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: black.withOpacity(0.5),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20),
-                child: Text(
-                  'Recent activities',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ListView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                children: snapshot.data!.docs.map((document) {
-                  return CircleAvatar(
-                    radius: 43,
-                    foregroundImage: NetworkImage(
-                      document['image'],
-                    ),
-                  );
-                }).toList(),
-              ),
+              charit1(title: 'Last Added', seeALLfunction: () {}),
+              lastadded(context, snapshot),
+              charit1(
+                  title: 'Last Added', seeALLfunction: () {}, seeALL: false),
+              nchat(snapshot, context),
             ],
           );
         });
   }
 
-  Padding clubOfficials(
-      BuildContext context, AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: Container(
-        height: height(context) * 0.08,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: snapshot.data!.docs.map((document) {
-            return CircleAvatar(
-              radius: 43,
-              foregroundImage: NetworkImage(
-                document['image'],
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+  ListView nchat(AsyncSnapshot<QuerySnapshot<Object?>> snapshot, context) {
+    return ListView(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      children: snapshot.data!.docs.map((document) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            elevation: 10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: widthf(context),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                          document['image'],
+                        )),
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: Colors.black12,
+                  ),
+                  height: 200,
+                ),
+                ButtonBar(
+                  alignment: MainAxisAlignment.start,
+                  children: [
+                    Text('definition'),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

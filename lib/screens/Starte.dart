@@ -12,7 +12,7 @@ class Start extends StatefulWidget {
 class _StartState extends State<Start> {
   @override
   void initState() {
-    Timer(Duration(hours: 7), () {
+    Timer(Duration(seconds: 5), () {
       Navigator.pop(context);
 
       Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -31,7 +31,7 @@ class _StartState extends State<Start> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 40),
+                padding: const EdgeInsets.only(left: 15),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.5,
                   width: MediaQuery.of(context).size.width * 0.7,

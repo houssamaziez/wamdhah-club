@@ -13,7 +13,7 @@ class Profile extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: StreamBuilder<QuerySnapshot>(
-          stream: user.snapshots(),
+          stream: all.snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(child: spinkit);

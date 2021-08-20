@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wamdha/config/dicl.dart';
 
+import 'books/listofbook.dart';
 import 'listview.dart';
 
 class Home extends StatefulWidget {
@@ -12,32 +13,58 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: whiat,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "Home",
-          style: TextStyle(color: black, fontWeight: FontWeight.bold),
-        ),
+    return WillPopScope(
+      onWillPop: () async {
+        return await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Are you sure to get out?"),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: Text('no')),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: Text('yes')),
+                ],
+              );
+            });
+      },
+      child: Scaffold(
         backgroundColor: whiat,
-        leading: Icon(
-          Icons.menu,
-          color: black.withOpacity(0.5),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            "Home",
+            style: TextStyle(color: black, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: whiat,
+          leading: Icon(
+            Icons.menu,
+            color: black.withOpacity(0.5),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.notifications,
+                  color: black.withOpacity(0.5),
+                ),
+              ),
+            )
+          ],
+          elevation: 0,
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.notifications,
-              color: black.withOpacity(0.5),
-            ),
-          )
-        ],
-        elevation: 0,
-      ),
-      body: NewWidget(
-        collection: user,
+        body: NewWidget(
+          collection: all,
+        ),
       ),
     );
   }
@@ -72,7 +99,12 @@ class NewWidget extends StatelessWidget {
               charit1(
                   title: 'Club Officials', seeALL: true, seeALLfunction: () {}),
               clubOfficials(context, snapshot),
-              charit1(title: 'Last Added', seeALLfunction: () {}),
+              charit1(
+                  title: 'Last Added',
+                  seeALLfunction: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ListOfBook()));
+                  }),
               lastadded(context, snapshot),
               charit1(
                   title: 'Last Added', seeALLfunction: () {}, seeALL: false),

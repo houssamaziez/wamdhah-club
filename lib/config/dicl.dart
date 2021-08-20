@@ -1,6 +1,46 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wamdha/searsh/Search.dart';
+
+List kk = [];
+getDataToList(collcaction, $list) async {
+  var dd = await collcaction.get().then((value) => value.docs);
+
+  for (var i = 0; i < dd.length; i++) {
+    var ddd = dd[i].data();
+    $list.add(ddd);
+  }
+  ss();
+}
+
+ss() {
+  listAllBook.forEach((element) {
+    listAllBookName.add(element["name"]);
+  });
+}
+
+goUrl({@required url}) async {
+  if (await canLaunch(url)) {
+    await launch(url, forceSafariVC: false);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+// list data
+var listAllBook = [];
+var listAllBookName = [];
+// entent screen
+
+void goNoback(BuildContext context, {@override screen}) {
+  Navigator.pop(context);
+
+  Navigator.push(context, MaterialPageRoute(builder: (context) => screen()));
+}
+// ___________________________________________________
 
 final spinkit = SpinKitCircle(
   itemBuilder: (BuildContext context, int index) {
@@ -14,6 +54,7 @@ final spinkit = SpinKitCircle(
 
 Color whiat = Colors.white;
 Color black = Colors.black;
+// size
 widthf(context) {
   return MediaQuery.of(context).size.width;
 }
@@ -22,10 +63,38 @@ height(context) {
   return MediaQuery.of(context).size.height;
 }
 
-var snapshot = user.snapshots();
+// les donnes
 
-CollectionReference user =
-    FirebaseFirestore.instance.collection("collectionPath");
+late String imageclck, title, author, details, dowload, read, tkhss;
+
+//____________________________________ collaction__________________________________
+var collaction;
+
+Stream<QuerySnapshot<Object?>> snapshot = all.snapshots();
+CollectionReference all = FirebaseFirestore.instance.collection("AllBooks");
+// ignore: non_constant_identifier_names
+CollectionReference collectionPath_Scientific = FirebaseFirestore.instance
+    .collection("books")
+    .doc('The Scientific Books')
+    .collection("books");
+// ignore: non_constant_identifier_names
+CollectionReference collectionPath_Religious = FirebaseFirestore.instance
+    .collection("books")
+    .doc('Religious Books')
+    .collection("books"); // ignore: non_constant_identifier_names
+// ignore: non_constant_identifier_names
+CollectionReference collectionPath_Human_Development = FirebaseFirestore
+    .instance
+    .collection("books")
+    .doc('Human Development')
+    .collection("books");
+// ignore: non_constant_identifier_names
+CollectionReference collectionPath_Political_Books = FirebaseFirestore.instance
+    .collection("books")
+    .doc('Political Books')
+    .collection("books");
+
+//______________________________________________________________________
 x() {}
 Padding charit1({
   @override title,
@@ -33,12 +102,13 @@ Padding charit1({
   seeALL = true,
 }) {
   return Padding(
-    padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+    padding: const EdgeInsets.only(left: 20, top: 20, right: 5),
     child: Row(
       children: [
         Text(
           title,
           style: TextStyle(
+            color: Colors.grey,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -49,7 +119,12 @@ Padding charit1({
                 onPressed: () {
                   seeALLfunction();
                 },
-                child: Text("See All"),
+                child: Text(
+                  "See All",
+                  style: TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
               )
             : Container(),
       ],
@@ -74,7 +149,9 @@ Widget searsh(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(12.0),
     child: InkWell(
-      onTap: () {},
+      onTap: () {
+        showSearch(context: context, delegate: Search());
+      },
       borderRadius: BorderRadius.all(Radius.circular(20)),
       child: Container(
         child: Row(
@@ -88,7 +165,10 @@ Widget searsh(BuildContext context) {
             ),
             Text(
               "Search",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey),
             )
           ],
         ),

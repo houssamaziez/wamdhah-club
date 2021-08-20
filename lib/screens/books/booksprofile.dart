@@ -1,15 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wamdha/config/dicl.dart';
+import 'package:wamdha/screens/Home.dart';
+
+import '../listview.dart';
 
 // ignore: must_be_immutable
-class Bookprofile extends StatelessWidget {
-  Bookprofile({Key? key}) : super(key: key);
+class Bookprofile extends StatefulWidget {
+  @override
+  State<Bookprofile> createState() => _BookprofileState();
+}
+
+class _BookprofileState extends State<Bookprofile> {
+  late double indextrading = 0;
+
   Color col = Colors.black12;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFE9E9E9),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -18,28 +30,95 @@ class Bookprofile extends StatelessWidget {
             backgroundColor: Colors.black,
             toolbarHeight: 85,
             elevation: 0,
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.arrow_back),
-            ),
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios)),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.ac_unit_rounded),
-              )
+                child: Icon(Icons.search),
+              ),
             ],
             expandedHeight: 350.0,
             flexibleSpace: const FlexibleSpaceBar(
               centerTitle: true,
-              background: My(),
+              background: MyBarProfileBook(),
             ),
           ),
           SliverList(
               delegate: SliverChildListDelegate([
+            charit1(title: 'Recommend', seeALL: true, seeALLfunction: () {}),
+            Container(
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: collaction.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(child: spinkit);
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: spinkit);
+                    }
+
+                    return lastadded(context, snapshot);
+                  }),
+            ),
+            charit1(title: 'More Details', seeALL: false),
+            Padding(
+              padding: const EdgeInsets.all(17.0),
+              child: Text(
+                details,
+              ),
+            ),
+            charit1(title: 'Rate the book', seeALL: false),
             SizedBox(
-              height: 5000,
+              width: 20,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: RatingBar.builder(
+                    initialRating: indextrading,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {
+                      print(rating);
+                      setState(() {
+                        indextrading = rating;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "$indextrading",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              width: widthf(context),
+              height: 49,
             )
-          ]))
+          ])),
         ],
       ),
     );
@@ -52,7 +131,9 @@ class Bookprofile extends StatelessWidget {
           children: [
             Expanded(
                 child: InkWell(
-              onTap: () {},
+              onTap: () {
+                goUrl(url: read);
+              },
               child: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +169,9 @@ class Bookprofile extends StatelessWidget {
             ),
             Expanded(
                 child: InkWell(
-              onTap: () {},
+              onTap: () {
+                goUrl(url: dowload);
+              },
               child: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -166,24 +249,21 @@ class Bookprofile extends StatelessWidget {
   }
 }
 
-class My extends StatefulWidget {
-  const My({Key? key}) : super(key: key);
+class MyBarProfileBook extends StatefulWidget {
+  const MyBarProfileBook({Key? key}) : super(key: key);
 
   @override
-  State<My> createState() => _MyState();
+  State<MyBarProfileBook> createState() => _MyBarProfileBookState();
 }
 
-class _MyState extends State<My> {
-  late double indextrading = 4;
+class _MyBarProfileBookState extends State<MyBarProfileBook> {
   @override
   Widget build(BuildContext context) {
     return Container(
       height: widthf(context),
       decoration: BoxDecoration(
           image: DecorationImage(
-              fit: BoxFit.cover,
-              image: NetworkImage(
-                  "https://m.media-amazon.com/images/I/51v0zzrUsgL.jpg"))),
+              fit: BoxFit.cover, image: NetworkImage(imageclck))),
       child: Container(
         color: Color(0xFF7A7171).withOpacity(0.7),
         height: widthf(context),
@@ -198,9 +278,7 @@ class _MyState extends State<My> {
                 height: height(context) * 0.2,
                 width: widthf(context) * 0.3,
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            "https://m.media-amazon.com/images/I/51v0zzrUsgL.jpg"))),
+                    image: DecorationImage(image: NetworkImage(imageclck))),
               ),
             ),
             Expanded(
@@ -214,7 +292,7 @@ class _MyState extends State<My> {
                     height: 10,
                   ),
                   Text(
-                    "Title Of Book",
+                    title,
                     style: TextStyle(
                       fontSize: 25,
                       color: Colors.white,
@@ -223,30 +301,6 @@ class _MyState extends State<My> {
                   ),
                   SizedBox(
                     height: 2,
-                  ),
-                  Row(
-                    children: [
-                      RatingBarIndicator(
-                        rating: 2.75,
-                        itemBuilder: (context, index) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        itemCount: 5,
-                        itemSize: 20.0,
-                        direction: Axis.horizontal,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "$indextrading",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
                   ),
                   SizedBox(
                     height: 10,
@@ -257,6 +311,7 @@ class _MyState extends State<My> {
                         "Author :",
                         style: TextStyle(
                           fontSize: 15,
+                          fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
@@ -265,10 +320,10 @@ class _MyState extends State<My> {
                       ),
                       Expanded(
                         child: Text(
-                          "dathsdh dkskk da",
+                          author,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.white54,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -278,18 +333,22 @@ class _MyState extends State<My> {
                     height: 10,
                   ),
                   Text(
-                    "Details :",
+                    "Rating :",
                     style: TextStyle(
+                      fontWeight: FontWeight.bold,
                       fontSize: 15,
                       color: Colors.white,
                     ),
                   ),
-                  Text(
-                    "orem ipsum zefef zefkzekgzkegkzke sit amet, consectetur adipiscing elit.orem ipsum zefef zefkzekgzkegkzke sit amet, consectetur adipiscing elit.",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white54,
+                  RatingBarIndicator(
+                    rating: 2.75,
+                    itemBuilder: (context, index) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
                     ),
+                    itemCount: 5,
+                    itemSize: 30.0,
+                    direction: Axis.horizontal,
                   ),
                 ],
               ),

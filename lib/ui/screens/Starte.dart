@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:wamdha/config/dicl.dart';
-import 'package:wamdha/screens/Home.dart';
+import 'package:wamdha/config/Function.dart';
+import 'package:wamdha/ui/screens/Home.dart';
 
 class Start extends StatefulWidget {
   @override
@@ -12,12 +12,12 @@ class Start extends StatefulWidget {
 class _StartState extends State<Start> {
   @override
   void initState() {
-    Timer(Duration(seconds: 5), () {
+    Timer(Duration(seconds: 6), () {
       Navigator.pop(context);
-
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return Home();
-      }));
+      push(
+        context: context,
+        screen: Home(),
+      );
     });
     super.initState();
   }

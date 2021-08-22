@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:wamdha/config/dicl.dart';
+import 'package:wamdha/config/Var.dart';
+import 'package:wamdha/config/Function.dart';
 
 // ignore: must_be_immutable
 class AddBook extends StatefulWidget {

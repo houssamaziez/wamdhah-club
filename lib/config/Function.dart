@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wamdha/config/Var.dart';
 import 'package:wamdha/searsh/Search.dart';
 
-List kk = [];
 getDataToList(collcaction, $list) async {
   var dd = await collcaction.get().then((value) => value.docs);
 
@@ -30,17 +30,11 @@ goUrl({@required url}) async {
   }
 }
 
-// list data
-var listAllBook = [];
-var listAllBookName = [];
-// entent screen
-
 void goNoback(BuildContext context, {@override screen}) {
   Navigator.pop(context);
 
   Navigator.push(context, MaterialPageRoute(builder: (context) => screen()));
 }
-// ___________________________________________________
 
 final spinkit = SpinKitCircle(
   itemBuilder: (BuildContext context, int index) {
@@ -52,49 +46,6 @@ final spinkit = SpinKitCircle(
   },
 );
 
-Color whiat = Colors.white;
-Color black = Colors.black;
-// size
-widthf(context) {
-  return MediaQuery.of(context).size.width;
-}
-
-height(context) {
-  return MediaQuery.of(context).size.height;
-}
-
-// les donnes
-
-late String imageclck, title, author, details, dowload, read, tkhss;
-
-//____________________________________ collaction__________________________________
-var collaction;
-
-Stream<QuerySnapshot<Object?>> snapshot = all.snapshots();
-CollectionReference all = FirebaseFirestore.instance.collection("AllBooks");
-// ignore: non_constant_identifier_names
-CollectionReference collectionPath_Scientific = FirebaseFirestore.instance
-    .collection("books")
-    .doc('The Scientific Books')
-    .collection("books");
-// ignore: non_constant_identifier_names
-CollectionReference collectionPath_Religious = FirebaseFirestore.instance
-    .collection("books")
-    .doc('Religious Books')
-    .collection("books"); // ignore: non_constant_identifier_names
-// ignore: non_constant_identifier_names
-CollectionReference collectionPath_Human_Development = FirebaseFirestore
-    .instance
-    .collection("books")
-    .doc('Human Development')
-    .collection("books");
-// ignore: non_constant_identifier_names
-CollectionReference collectionPath_Political_Books = FirebaseFirestore.instance
-    .collection("books")
-    .doc('Political Books')
-    .collection("books");
-
-//______________________________________________________________________
 x() {}
 Padding charit1({
   @override title,
@@ -102,7 +53,7 @@ Padding charit1({
   seeALL = true,
 }) {
   return Padding(
-    padding: const EdgeInsets.only(left: 20, top: 20, right: 5),
+    padding: const EdgeInsets.only(left: 20, top: 0, right: 5),
     child: Row(
       children: [
         Text(
@@ -178,6 +129,60 @@ Widget searsh(BuildContext context) {
         width: widthf(context),
         height: 45,
       ),
+    ),
+  );
+}
+
+push({@override context, @override screen}) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => screen,
+        fullscreenDialog: true,
+      ));
+}
+
+Widget buttonchoix({
+  image,
+  title,
+  function,
+}) {
+  return InkWell(
+    onTap: () {
+      function();
+    },
+    child: Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: Color(0xFFCECBCB),
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: -5,
+                  color: Colors.grey,
+                  offset: Offset(0.0, 7.0), //(x,y)
+                  blurRadius: 15.0,
+                ),
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(12))),
+          height: 50,
+          width: 50,
+          child: Center(
+            child: Image.asset(
+              image,
+              width: 40,
+              height: 40,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          title,
+          style: TextStyle(color: Colors.grey),
+        )
+      ],
     ),
   );
 }

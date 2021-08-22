@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:wamdha/config/dicl.dart';
-import 'package:wamdha/screens/books/booksprofile.dart';
-import 'package:wamdha/screens/profile.dart';
+import 'package:provider/provider.dart';
+import 'package:wamdha/config/Providers.dart';
+import 'package:wamdha/config/Var.dart';
+import 'package:wamdha/config/Function.dart';
+import 'package:wamdha/ui/screens/books/booksprofile.dart';
+import 'package:wamdha/ui/screens/profile.dart';
 
 // ignore: camel_case_types
 class books extends StatefulWidget {
@@ -25,13 +28,8 @@ class books extends StatefulWidget {
 // ignore: camel_case_types
 class _booksState extends State<books> {
   @override
-  void dispose() {
-    Navigator.pop(context);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final prov = Provider.of<MyProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
@@ -43,45 +41,16 @@ class _booksState extends State<books> {
             elevation: 6,
             child: InkWell(
               onTap: () {
-                setState(() {
-                  imageclck = widget.image;
-                  title = widget.title;
-                  author = widget.author;
-                  details = widget.details;
-                  dowload = widget.dowload;
-                  tkhss = widget.tkhss;
-
-                  read = widget.read;
-                  switch (tkhss) {
-                    case "S":
-                      collaction = collectionPath_Scientific;
-
-                      break;
-                    case "R":
-                      collaction = collectionPath_Religious;
-
-                      break;
-                    case "P":
-                      collaction = collectionPath_Political_Books;
-
-                      break;
-                    case "H":
-                      collaction = collectionPath_Human_Development;
-
-                      break;
-                    default:
-                  }
-                });
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<Null>(
-                      builder: (BuildContext context) {
-                        return Bookprofile();
-                      },
-                      settings: RouteSettings(name: 'houssam'),
-                      fullscreenDialog: true,
-                    ));
+                prov.ff(
+                  author1: widget.author,
+                  details1: widget.details,
+                  dowload1: widget.dowload,
+                  image1: widget.image,
+                  read1: widget.read,
+                  title1: widget.title,
+                  tkhss1: widget.tkhss,
+                );
+                push(context: context, screen: Bookprofile());
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -99,7 +68,7 @@ class _booksState extends State<books> {
             ),
           ),
           Positioned(
-            right: 0,
+            right: 12,
             bottom: 0,
             child: Row(
               children: [
@@ -133,49 +102,52 @@ clubOfficials(
   BuildContext context,
   AsyncSnapshot<QuerySnapshot<Object?>> snapshot,
 ) {
-  return Stack(
-    children: [
-      Container(
-        height: 70,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: snapshot.data!.docs.map((document) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return Profile();
-                }));
-              },
+  return Container(
+    color: Color(0xFFF2F2F2),
+    height: 110,
+    child: ListView(
+      scrollDirection: Axis.horizontal,
+      children: snapshot.data!.docs.map((document) {
+        return InkWell(
+          onTap: () {
+            push(
+              context: context,
+              screen: Profile(),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: -10,
+                  color: Colors.grey,
+                  offset: Offset(0.0, 5.0), //(x,y)
+                  blurRadius: 15.0,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.black26,
-                foregroundImage: NetworkImage(
-                  document['image'],
+                minRadius: 39,
+                backgroundColor: whiat,
+                maxRadius: 39,
+                child: CircleAvatar(
+                  minRadius: 35,
+                  maxRadius: 35,
+                  backgroundColor: Colors.black26,
+                  foregroundImage: NetworkImage(
+                    document['image'],
+                  ),
                 ),
               ),
-            );
-          }).toList(),
-        ),
-      ),
-      Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.11),
-                offset: Offset(15.0, 0.0), //(x,y)
-                blurRadius: 10.0,
-              ),
-            ],
-            color: Colors.transparent,
+            ),
           ),
-          height: 80,
-          margin: const EdgeInsets.only(bottom: 6.0),
-          width: 30,
-        ),
-      )
-    ],
+        );
+      }).toList(),
+    ),
   );
 }
 

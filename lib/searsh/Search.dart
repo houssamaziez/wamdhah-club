@@ -1,7 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:wamdha/config/dicl.dart';
-import 'package:wamdha/screens/books/booksprofile.dart';
+import 'package:provider/provider.dart';
+import 'package:wamdha/config/Providers.dart';
+import 'package:wamdha/config/Var.dart';
+import 'package:wamdha/config/Function.dart';
+
 import 'package:wamdha/searsh/pageresult.dart';
 
 class Search extends SearchDelegate {
@@ -18,21 +20,27 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildLeading(BuildContext context) {
+    final prov = Provider.of<MyProvider>(context);
     return IconButton(
-        icon: Icon(Icons.arrow_back), onPressed: () => close(context, null));
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          close(context, null);
+          prov.index(0);
+        });
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    final listv = listAllBookName.where(
-        (element) => element.toLowerCase().contains(query.toLowerCase()));
     return Container();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final dd = listAllBookName.where(
-        (element) => element.toLowerCase().contains(query.toLowerCase()));
+    var list = [];
+    final dd = query.isEmpty
+        ? list
+        : listAllBookName.where(
+            (element) => element.toLowerCase().contains(query.toLowerCase()));
     return ListView.builder(
         itemCount: dd.length,
         itemBuilder: (context, index) {
@@ -42,11 +50,10 @@ class Search extends SearchDelegate {
               Icons.arrow_forward_ios,
             ),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute<Null>(
-                builder: (BuildContext context) {
-                  return Pageresult(dd.elementAt(index));
-                },
-              ));
+              push(
+                context: context,
+                screen: Pageresult(dd.elementAt(index)),
+              );
             },
           );
         });

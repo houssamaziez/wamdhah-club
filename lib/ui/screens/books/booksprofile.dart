@@ -2,8 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:wamdha/config/dicl.dart';
-import 'package:wamdha/screens/Home.dart';
+import 'package:provider/provider.dart';
+import 'package:wamdha/config/Function.dart';
+import 'package:wamdha/config/Providers.dart';
+import 'package:wamdha/config/Var.dart';
+
+import 'package:wamdha/ui/screens/books/listbook/Gridbook.dart';
 
 import '../listview.dart';
 
@@ -14,12 +18,11 @@ class Bookprofile extends StatefulWidget {
 }
 
 class _BookprofileState extends State<Bookprofile> {
-  late double indextrading = 0;
-
   Color col = Colors.black12;
 
   @override
   Widget build(BuildContext context) {
+    final prov = Provider.of<MyProvider>(context);
     return Scaffold(
       backgroundColor: Color(0xFFE9E9E9),
       body: CustomScrollView(
@@ -49,7 +52,12 @@ class _BookprofileState extends State<Bookprofile> {
           ),
           SliverList(
               delegate: SliverChildListDelegate([
-            charit1(title: 'Recommend', seeALL: true, seeALLfunction: () {}),
+            charit1(
+                title: 'Recommend',
+                seeALL: true,
+                seeALLfunction: () {
+                  push(context: context, screen: GirdBook());
+                }),
             Container(
               child: StreamBuilder<QuerySnapshot>(
                   stream: collaction.snapshots(),
@@ -69,7 +77,7 @@ class _BookprofileState extends State<Bookprofile> {
             Padding(
               padding: const EdgeInsets.all(17.0),
               child: Text(
-                details,
+                prov.details,
               ),
             ),
             charit1(title: 'Rate the book', seeALL: false),
@@ -83,34 +91,10 @@ class _BookprofileState extends State<Bookprofile> {
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: RatingBar.builder(
-                    initialRating: indextrading,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    onRatingUpdate: (rating) {
-                      print(rating);
-                      setState(() {
-                        indextrading = rating;
-                      });
-                    },
-                  ),
+                  child: prov.indexratin(),
                 ),
                 SizedBox(
                   width: 10,
-                ),
-                Text(
-                  "$indextrading",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                  ),
                 ),
               ],
             ),
@@ -125,6 +109,7 @@ class _BookprofileState extends State<Bookprofile> {
   }
 
   PreferredSize rsiftlch(BuildContext context) {
+    final prov = Provider.of<MyProvider>(context);
     return PreferredSize(
       child: Container(
         child: Row(
@@ -132,7 +117,7 @@ class _BookprofileState extends State<Bookprofile> {
             Expanded(
                 child: InkWell(
               onTap: () {
-                goUrl(url: read);
+                goUrl(url: prov.read);
               },
               child: Container(
                 child: Row(
@@ -170,7 +155,7 @@ class _BookprofileState extends State<Bookprofile> {
             Expanded(
                 child: InkWell(
               onTap: () {
-                goUrl(url: dowload);
+                goUrl(url: prov.dowload);
               },
               child: Container(
                 child: Row(
@@ -259,11 +244,12 @@ class MyBarProfileBook extends StatefulWidget {
 class _MyBarProfileBookState extends State<MyBarProfileBook> {
   @override
   Widget build(BuildContext context) {
+    final prov = Provider.of<MyProvider>(context);
     return Container(
       height: widthf(context),
       decoration: BoxDecoration(
           image: DecorationImage(
-              fit: BoxFit.cover, image: NetworkImage(imageclck))),
+              fit: BoxFit.cover, image: NetworkImage(prov.imageclck))),
       child: Container(
         color: Color(0xFF7A7171).withOpacity(0.7),
         height: widthf(context),
@@ -278,7 +264,8 @@ class _MyBarProfileBookState extends State<MyBarProfileBook> {
                 height: height(context) * 0.2,
                 width: widthf(context) * 0.3,
                 decoration: BoxDecoration(
-                    image: DecorationImage(image: NetworkImage(imageclck))),
+                    image:
+                        DecorationImage(image: NetworkImage(prov.imageclck))),
               ),
             ),
             Expanded(
@@ -292,7 +279,7 @@ class _MyBarProfileBookState extends State<MyBarProfileBook> {
                     height: 10,
                   ),
                   Text(
-                    title,
+                    prov.title,
                     style: TextStyle(
                       fontSize: 25,
                       color: Colors.white,
@@ -320,7 +307,7 @@ class _MyBarProfileBookState extends State<MyBarProfileBook> {
                       ),
                       Expanded(
                         child: Text(
-                          author,
+                          prov.author,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.white,
@@ -349,7 +336,7 @@ class _MyBarProfileBookState extends State<MyBarProfileBook> {
                     itemCount: 5,
                     itemSize: 30.0,
                     direction: Axis.horizontal,
-                  ),
+                  )
                 ],
               ),
             ))
